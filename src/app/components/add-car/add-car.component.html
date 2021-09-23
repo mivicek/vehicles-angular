@@ -1,0 +1,32 @@
+<section>
+  <form *ngIf="submited === false" #vehicleForm="ngForm">
+    <h1>Enter new vehicle info</h1>
+    <mat-form-field appearance="fill">
+      <mat-label>Vehicle make:</mat-label>
+      <input matInput type="text" required  [(ngModel)]="new_vehicle.make" name="make" id="make">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Vehicle model:</mat-label>
+      <input matInput type="text" required [(ngModel)]="new_vehicle.model" name="model" id="model">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Vehicle year:</mat-label>
+      <input matInput type="number" required [(ngModel)]="new_vehicle.year" name="year" id="year">
+    </mat-form-field>
+    <div class="submit-buttons">
+      <button mat-raised-button color="warn" (click)="backToAllCars()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="submit()" [disabled]="!vehicleForm.form.valid">Submit</button>
+    </div>
+  </form>
+</section>
+
+<section *ngIf="submited === true">
+<div>
+  <h3 *ngIf="submitSuccess"> Vehicle "{{new_vehicle.make}} {{new_vehicle.model}}, {{new_vehicle.year}}" has been submitted</h3>
+  <h3 *ngIf="!submitSuccess" class="red">This vehicle type already exists in database</h3>
+  <div class="submit-buttons submited">
+    <button mat-raised-button color="primary" (click)="reset()">Submit another</button>
+    <button mat-raised-button color="primary" (click)="backToAllCars()">Return</button>
+  </div>
+</div>
+</section>

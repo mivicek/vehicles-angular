@@ -1,0 +1,23 @@
+section {
+    padding: 0.3rem 1rem 0.3rem 1rem;
+    width:100%;
+    display: flex;
+    justify-content: center;
+}
+
+form {
+    display:flex;
+    flex-direction: column;
+    // max-width: 16rem;
+}
+
+.submit-buttons {
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.red {
+    color: red;
+}

@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Delete this vehicle?</h2>
+<mat-dialog-content class="mat-typography">
+    <h3>{{data.vehicle.make}} {{data.vehicle.model}}, {{data.vehicle.year}}</h3>
+    
+  </mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-button  mat-dialog-close [mat-dialog-close]="false">Cancel</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true" >Delete</button> <!-- cdkFocusInitial-->
+</mat-dialog-actions>

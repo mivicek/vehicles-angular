@@ -1,0 +1,70 @@
+<section class="buttons">
+  <button mat-raised-button color="primary" (click)="getAllCars()">
+    Refresh vehicle list
+  </button>
+
+  <a routerLink="add-vehicle">
+    <button mat-raised-button color="primary">
+      Create new vehicle type
+    </button>
+  </a>
+</section>
+
+<section>
+  <!-- client side search -->
+  <mat-form-field appearance="standard">
+    <mat-label>Client-side Filter</mat-label>
+    <input matInput (keyup)="clientFilter($event)" placeholder="Audi" #input>
+  </mat-form-field>
+
+
+  <!-- backend search-->
+  <mat-form-field appearance="standard" style="width:25%; margin-right:0.5rem">
+    <mat-label>Filter by make</mat-label>
+    <input matInput type="text" [(ngModel)]="backendSearchTerm.make" name="make" id="make">
+  </mat-form-field>
+
+  <mat-form-field appearance="standard" style="width:25%; margin-right:0.5rem">
+    <mat-label>Filter by model</mat-label>
+    <input matInput type="text" [(ngModel)]="backendSearchTerm.model" name="model" id="model">
+  </mat-form-field>
+
+  <mat-form-field appearance="standard" style="width:25%; margin-right:0.5rem">
+    <mat-label>Filter by year</mat-label>
+    <input matInput type="number" [(ngModel)]="backendSearchTerm.year" name="year" id="year">
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="backendFilter()">filter</button>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="make">
+      <th mat-header-cell *matHeaderCellDef> Make </th>
+      <td mat-cell *matCellDef="let element"> {{element.make}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="model">
+      <th mat-header-cell *matHeaderCellDef> Model </th>
+      <td mat-cell *matCellDef="let element"> {{element.model}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="year">
+      <th mat-header-cell *matHeaderCellDef> Year </th>
+      <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef> Delete? </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="warn" aria-label="delete this field?" (click)="openDeleteDialog(element)">
+          <mat-icon>delete</mat-icon>
+        </button>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    </tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+</section>
