@@ -4,7 +4,7 @@ import { catchError } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { ResponseMsg } from '../models/response-msg.model';
-
+import { apiUrl } from 'src/environments/environment';
 
 
 @Injectable({
@@ -12,16 +12,17 @@ import { ResponseMsg } from '../models/response-msg.model';
 })
 export class CrudService {
 
-  // REST_API: string = 'http://localhost:3000/api'; // local, prije deploymenta
-  REST_API: string = 'http://164.90.221.93/api';
+  REST_API: string = apiUrl;
 
   all_vehicles: Car[] = [];
 
   httpHeaders = new HttpHeaders().set('Content-Type', 'application/json');
 
-
   allVehiclesSubject = new Subject<Car[]>();
   vehiclesInputSubject = new Subject<any>();
+
+
+  errorSubject = new Subject<HttpErrorResponse>(); // toDo
 
   constructor(private httpClient: HttpClient) { }
 
@@ -51,9 +52,11 @@ export class CrudService {
   }
 
   getAllCars() {
-    return this.httpClient.get(`${this.REST_API}/get-all-cars`).pipe(
+    return this.httpClient.get(`${this.REST_API}/get-all-cars`)
+    .pipe(
       catchError(this.handleError)
-    ).subscribe((data) => {
+    )
+    .subscribe((data) => {
       console.log('got data', data);
       // this.all_vehicles = JSON.parse(data);
       this.convertAllVehicles(data as any);
@@ -95,13 +98,19 @@ export class CrudService {
   }
 
   handleError(error: HttpErrorResponse) {
+    console.log('crud error');
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
+      this.test();
     } else {
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    // console.log(errorMessage);
+    
     return throwError(errorMessage);
+  }
+
+  test(): void {
+    console.log('just test');
   }
 }

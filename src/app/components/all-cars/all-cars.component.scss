@@ -11,14 +11,21 @@ section {
 }
 
 table {
-    width: 100%;
-  }
+  width: 100%;
+}
   
-  .mat-form-field {
-    font-size: 14px;
-    width: 100%;
-  }
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
   
-  td, th {
-    width: 25%;
-  }
+td, th {
+  width: 25%;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 12rem;
+}

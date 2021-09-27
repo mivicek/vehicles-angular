@@ -9,6 +9,7 @@ import { Car } from 'src/app/models/car.model';
 import { CrudService } from 'src/app/services/crud.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteVehicleDialogComponent } from 'src/app/reusable-components/delete-vehicle-dialog/delete-vehicle-dialog.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-all-cars',
@@ -28,8 +29,11 @@ export class AllCarsComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<Car>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
+  showResults: boolean = true;
+  showError: boolean = false;
+  errorMessage: string = '';
   private allVehiclesSubscription: Subscription;
+  private errorSubscription: Subscription;
 
   constructor(
     private crudService: CrudService,
@@ -37,17 +41,26 @@ export class AllCarsComponent implements OnInit, OnDestroy {
   ) {
     this.dataSource = new MatTableDataSource(this.allVehicles);
     this.allVehiclesSubscription = this.crudService.allVehiclesSubject.subscribe((vehicles: Car[]) => {
+      this.showResults = true;
       this.allVehicles = [];
       this.allVehicles = vehicles;
       this.dataSource.data = this.allVehicles;
-    })
+    });
+
+    // todo
+    this.errorSubscription = this.crudService.errorSubject.subscribe((error: HttpErrorResponse) => {
+      console.log('ERROR happened');
+      this.errorMessage = error.toString();
+      this.showResults = false;
+      this.showError = true;
+    });
   }
 
   ngOnInit(): void {
     if (this.crudService.all_vehicles.length > 0) {
       this.dataSource.data = this.crudService.all_vehicles;
     } else {
-      this.getAllCars();
+      // this.getAllCars();
     }
   }
 
@@ -57,6 +70,7 @@ export class AllCarsComponent implements OnInit, OnDestroy {
   }
 
   getAllCars(): void {
+    this.showResults = false;
     this.crudService.getAllCars();
   }
 
@@ -92,6 +106,7 @@ export class AllCarsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.allVehiclesSubscription.unsubscribe;
+    this.errorSubscription.unsubscribe;
   }
 
 }

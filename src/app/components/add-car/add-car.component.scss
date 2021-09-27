@@ -1,6 +1,5 @@
 section {
     padding: 0.3rem 1rem 0.3rem 1rem;
-    width:100%;
     display: flex;
     justify-content: center;
 }
@@ -8,7 +7,6 @@ section {
 form {
     display:flex;
     flex-direction: column;
-    // max-width: 16rem;
 }
 
 .submit-buttons {
