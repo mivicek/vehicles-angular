@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Subscription } from 'rxjs';
 import { Car } from 'src/app/models/car.model';
+import { ResultsToggler } from 'src/app/models/results-toggler';
 import { CrudService } from 'src/app/services/crud.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteVehicleDialogComponent } from 'src/app/reusable-components/delete-vehicle-dialog/delete-vehicle-dialog.component';
@@ -23,15 +24,14 @@ export class AllCarsComponent implements OnInit, OnDestroy {
     model: '',
     year: '' 
   }
-
+  fuzzyBackendSearchTerm: string = '';
 
   displayedColumns: string[] = ['make', 'model', 'year', 'delete'];
   dataSource: MatTableDataSource<Car>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  showResults: boolean = true;
-  showError: boolean = false;
-  showSpinner:boolean = false;
+  
+  resultsToggler: ResultsToggler = ResultsToggler.results;
   errorMessage: string = '';
   private allVehiclesSubscription: Subscription;
   private errorSubscription: Subscription;
@@ -42,9 +42,7 @@ export class AllCarsComponent implements OnInit, OnDestroy {
   ) {
     this.dataSource = new MatTableDataSource(this.allVehicles);
     this.allVehiclesSubscription = this.crudService.allVehiclesSubject.subscribe((vehicles: Car[]) => {
-      this.showResults = true;
-      this.showSpinner = false;
-      this.showError = false;
+      this.resultsToggler = ResultsToggler.results;
       this.allVehicles = [];
       this.allVehicles = vehicles;
       this.dataSource.data = this.allVehicles;
@@ -53,10 +51,8 @@ export class AllCarsComponent implements OnInit, OnDestroy {
     // todo
     this.errorSubscription = this.crudService.errorSubject.subscribe((error: HttpErrorResponse) => {
       console.log('ERROR happened', error);
-      this.errorMessage = 'Error happened' // error.headers.toString();
-      this.showResults = false;
-      this.showSpinner = false;
-      this.showError = true;
+      this.errorMessage = 'Error happened' // todo točan error
+      this.resultsToggler = ResultsToggler.error;
     });
   }
 
@@ -64,7 +60,7 @@ export class AllCarsComponent implements OnInit, OnDestroy {
     if (this.crudService.all_vehicles.length > 0) {
       this.dataSource.data = this.crudService.all_vehicles;
     } else {
-      // this.getAllCars();
+      this.getAllCars();
     }
   }
 
@@ -74,9 +70,7 @@ export class AllCarsComponent implements OnInit, OnDestroy {
   }
 
   getAllCars(): void {
-    this.showResults = false;
-    this.showSpinner = true;
-    this.showError = false;
+    this.resultsToggler = ResultsToggler.spinner;
     this.crudService.getAllCars();
   }
 
@@ -99,14 +93,20 @@ export class AllCarsComponent implements OnInit, OnDestroy {
   clientFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
 
+  backendFuzzyFilter() {
+    this.resultsToggler = ResultsToggler.spinner;
+    if (this.fuzzyBackendSearchTerm.length > 0) {
+      this.crudService.fuzzyFilter(this.fuzzyBackendSearchTerm);
+    }
+  }
+
   backendFilter() {
-    console.log('backendFilter: ', this.backendSearchTerm);
+    this.resultsToggler = ResultsToggler.spinner;
     this.crudService.filter(this.backendSearchTerm);
   }
 
