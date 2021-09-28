@@ -66,13 +66,16 @@
       </tr>
     </table>
   </ng-container>
-  <ng-container *ngIf="!showResults">
+  <ng-container *ngIf="showSpinner">
     <section class="spinner">
       <mat-spinner></mat-spinner>
     </section>
   </ng-container>
   <ng-container *ngIf="showError">
-    {{errorMessage}}
+    <section class="spinner">
+      {{errorMessage}}
+    </section>
+    
   </ng-container>
   <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
 </section>

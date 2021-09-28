@@ -31,6 +31,7 @@ export class AllCarsComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort!: MatSort;
   showResults: boolean = true;
   showError: boolean = false;
+  showSpinner:boolean = false;
   errorMessage: string = '';
   private allVehiclesSubscription: Subscription;
   private errorSubscription: Subscription;
@@ -42,6 +43,8 @@ export class AllCarsComponent implements OnInit, OnDestroy {
     this.dataSource = new MatTableDataSource(this.allVehicles);
     this.allVehiclesSubscription = this.crudService.allVehiclesSubject.subscribe((vehicles: Car[]) => {
       this.showResults = true;
+      this.showSpinner = false;
+      this.showError = false;
       this.allVehicles = [];
       this.allVehicles = vehicles;
       this.dataSource.data = this.allVehicles;
@@ -49,9 +52,10 @@ export class AllCarsComponent implements OnInit, OnDestroy {
 
     // todo
     this.errorSubscription = this.crudService.errorSubject.subscribe((error: HttpErrorResponse) => {
-      console.log('ERROR happened');
-      this.errorMessage = error.toString();
+      console.log('ERROR happened', error);
+      this.errorMessage = 'Error happened' // error.headers.toString();
       this.showResults = false;
+      this.showSpinner = false;
       this.showError = true;
     });
   }
@@ -71,6 +75,8 @@ export class AllCarsComponent implements OnInit, OnDestroy {
 
   getAllCars(): void {
     this.showResults = false;
+    this.showSpinner = true;
+    this.showError = false;
     this.crudService.getAllCars();
   }
 

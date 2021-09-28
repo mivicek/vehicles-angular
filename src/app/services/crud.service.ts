@@ -22,7 +22,7 @@ export class CrudService {
   vehiclesInputSubject = new Subject<any>();
 
 
-  errorSubject = new Subject<HttpErrorResponse>(); // toDo
+  errorSubject = new Subject<HttpErrorResponse>();
 
   constructor(private httpClient: HttpClient) { }
 
@@ -53,6 +53,18 @@ export class CrudService {
 
   getAllCars() {
     return this.httpClient.get(`${this.REST_API}/get-all-cars`)
+    .subscribe(
+      data => {
+        this.convertAllVehicles(data as any)
+      },
+      error => {
+        this.errorSubject.next(error);
+        catchError(this.handleError);
+        console.log('error:', error)
+      }
+    );
+
+    /*
     .pipe(
       catchError(this.handleError)
     )
@@ -61,6 +73,7 @@ export class CrudService {
       // this.all_vehicles = JSON.parse(data);
       this.convertAllVehicles(data as any);
     });
+    */
   }
 
   filter(vehicle: Car) {
@@ -102,15 +115,13 @@ export class CrudService {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
-      this.test();
     } else {
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
     
-    return throwError(errorMessage);
+    // return throwError(errorMessage);
+    return(errorMessage)
   }
 
-  test(): void {
-    console.log('just test');
-  }
+
 }
