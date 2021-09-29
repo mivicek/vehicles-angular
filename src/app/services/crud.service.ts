@@ -52,6 +52,7 @@ export class CrudService {
   }
 
   getAllCars() {
+    // if (this.all_vehicles.length )
     return this.httpClient.get(`${this.REST_API}/get-all-cars`)
       .subscribe(
         data => {

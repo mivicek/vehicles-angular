@@ -57,11 +57,15 @@ export class AllCarsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    /*
     if (this.crudService.all_vehicles.length > 0) {
-      this.dataSource.data = this.crudService.all_vehicles;
+      // this.crudService.allVehiclesSubject.next(this.crudService.all_vehicles);
+      // this.dataSource.data = this.crudService.all_vehicles;
     } else {
       this.getAllCars();
     }
+    */
+
   }
 
   ngAfterViewInit() {
